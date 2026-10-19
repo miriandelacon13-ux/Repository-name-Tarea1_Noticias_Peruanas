@@ -155,3 +155,88 @@ Ejemplo:
 
 ```text
 Selección peruana se prepara para su próximo partido internacional
+
+Resultado esperado:
+Categoría predicha: Deportes
+---
+
+## Estructura del proyecto
+
+
+---
+tarea_1/
+│
+├── 01_recoleccion.ipynb
+├── 02_clasificacion.ipynb
+├── app.py
+├── requirements.txt
+├── README.md
+├── .gitignore
+│
+├── datos/
+│   ├── noticias.csv
+│   └── etiquetas_llm.csv
+│
+└── modelo/
+    ├── config.json
+    ├── tokenizer.json
+    └── tokenizer_config.json
+
+    Por motivos de tamaño, los siguientes archivos están excluidos mediante .gitignore:
+
+    modelo/*.safetensors
+modelo/*.bin
+modelo/checkpoints/
+modelo/checkpoint-*/
+modelo/**/checkpoint-*/
+El archivo principal de pesos generado durante el entrenamiento es:
+modelo/model.safetensors
+
+## Nota sobre el modelo entrenado
+Los archivos pesados del modelo, como model.safetensors y los checkpoints de entrenamiento, no se incluyen en GitHub para evitar subir archivos de gran tamaño.
+El dashboard puede mostrar correctamente los datos, gráficos, métricas y comparación de modelos aunque los pesos no estén disponibles.
+Para utilizar la función de clasificación automática de titulares se requiere contar localmente con:
+
+modelo/model.safetensors
+
+## Cómo ejecutar el dashboard
+Opción 1: desde la carpeta raíz del repositorio
+
+streamlit run tarea_1/app.py
+
+Instalación de dependencias
+Desde la carpeta raíz del repositorio:
+
+pip install -r tarea_1/requirements.txt
+
+Si ya se encuentra dentro de la carpeta tarea_1:
+
+pip install -r requirements.txt
+
+Tecnologías utilizadas
+- Python
+- Pandas
+- NumPy
+- Requests
+- BeautifulSoup
+- Plotly
+- Scikit-learn
+- Hugging Face Transformers
+- PyTorch
+- Datasets
+- Ollama
+- Qwen 2.5 3B
+- DistilBERT
+- Streamlit
+
+Conclusiones
+El proyecto permitió aplicar diferentes técnicas de clasificación de texto sobre noticias peruanas reales.
+El modelo Ollama Qwen 2.5 3B obtuvo el mejor desempeño, alcanzando un Accuracy de 73.33% y un F1 Macro de 73.10%.
+El modelo DistilBERT fine-tuned obtuvo un Accuracy de 64.81% y un F1 Macro de 66.56%. Aunque no superó a Ollama, sí obtuvo un F1 Macro superior al modelo Zero-shot.
+La matriz de confusión mostró que DistilBERT presentó un buen desempeño en noticias de política y deportes, mientras que tuvo mayores dificultades en economía y ciencia y tecnología.
+Una posible explicación es el tamaño limitado del dataset y el uso de etiquetas generadas mediante supervisión débil. Una mayor cantidad de noticias y una revisión manual más amplia de las etiquetas podría mejorar el desempeño del modelo en futuros trabajos.
+
+Autor:Mirian de la Cruz
+Trabajo desarrollado para:
+Tarea 1 – Noticias peruanas: del titular al clasificador
+
