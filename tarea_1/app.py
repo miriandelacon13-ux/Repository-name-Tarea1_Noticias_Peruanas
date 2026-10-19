@@ -3,7 +3,9 @@ import pandas as pd
 import plotly.express as px
 import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from pathlib import Path
 
+BASE_DIR = Path(__file__).resolve().parent
 
 st.set_page_config(
     page_title="Clasificador de Noticias Peruanas",
@@ -75,9 +77,21 @@ div[data-testid="stDataFrame"] {
 """, unsafe_allow_html=True)
 @st.cache_resource
 def cargar_modelo():
-    tokenizer = AutoTokenizer.from_pretrained("modelo")
-    model = AutoModelForSequenceClassification.from_pretrained("modelo")
+    ruta_modelo = BASE_DIR / "modelo"
+
+    archivo_pesos = ruta_modelo / "model.safetensors"
+
+    if not archivo_pesos.exists():
+        return None, None
+
+    tokenizer = AutoTokenizer.from_pretrained(ruta_modelo)
+
+    model = AutoModelForSequenceClassification.from_pretrained(
+        ruta_modelo
+    )
+
     model.eval()
+
     return tokenizer, model
 
 tokenizer, model = cargar_modelo()
@@ -86,7 +100,7 @@ tokenizer, model = cargar_modelo()
 # CARGA DE DATOS
 # =========================
 
-df = pd.read_csv("datos/noticias.csv")
+df = pd.read_csv(BASE_DIR / "datos" / "noticias.csv")
 
 # =========================
 # ENCABEZADO
@@ -178,7 +192,7 @@ st.plotly_chart(
 )
 
 # =========================
-# TABLA
+# CLASIFICADOR
 # =========================
 st.markdown(
     '<div class="section-title">🤖 Clasifica un titular</div>',
@@ -196,6 +210,13 @@ titular_usuario = st.text_input(
 )
 
 if st.button("🔍 Clasificar noticia", use_container_width=True):
+
+    if tokenizer is None or model is None:
+        st.error(
+            "El modelo entrenado no está disponible en este entorno. "
+            "Los archivos pesados del modelo no se incluyen en GitHub."
+        )
+        st.stop()
 
     if titular_usuario.strip():
 
@@ -263,13 +284,6 @@ comparacion = pd.DataFrame({
     ]
 })
 
-fig_modelos = px.bar(
-    comparacion,
-    x="Modelo",
-    y=["Accuracy", "F1 Macro"],
-    barmode="group",
-    title="Rendimiento de los modelos (%)"
-)
 
 fig_modelos = px.bar(
     comparacion,
