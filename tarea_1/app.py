@@ -77,17 +77,12 @@ div[data-testid="stDataFrame"] {
 """, unsafe_allow_html=True)
 @st.cache_resource
 def cargar_modelo():
-    ruta_modelo = BASE_DIR / "modelo"
+    modelo_hf = "Mirian13/clasificador-noticias-peruanas"
 
-    archivo_pesos = ruta_modelo / "model.safetensors"
-
-    if not archivo_pesos.exists():
-        return None, None
-
-    tokenizer = AutoTokenizer.from_pretrained(ruta_modelo)
+    tokenizer = AutoTokenizer.from_pretrained(modelo_hf)
 
     model = AutoModelForSequenceClassification.from_pretrained(
-        ruta_modelo
+        modelo_hf
     )
 
     model.eval()
