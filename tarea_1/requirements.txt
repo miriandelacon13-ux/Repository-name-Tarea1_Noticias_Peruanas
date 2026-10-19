@@ -9,3 +9,6 @@ torch
 sentencepiece
 streamlit
 google-genai
+ollama
+datasets
+accelerate
